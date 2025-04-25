@@ -1,31 +1,29 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { fetchDoctors, extractUniqueSpecialties, getSearchSuggestions } from '../services/doctorService';
+import Logo from '../components/Logo';
 import { Doctor, ConsultationType, SortOption, FilterState } from '../types/doctor';
 import AutocompleteSearch from '../components/AutocompleteSearch';
 import FilterPanel from '../components/FilterPanel';
 import DoctorGrid from '../components/DoctorGrid';
 import { updateUrlWithFilterState, getFilterStateFromUrl } from '../utils/urlParams';
+
 const Index = () => {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [filteredDoctors, setFilteredDoctors] = useState<Doctor[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Filter state
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [selectedConsultationType, setSelectedConsultationType] = useState<ConsultationType | null>(null);
   const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]);
   const [sortOption, setSortOption] = useState<SortOption | null>(null);
 
-  // Search suggestions
   const [suggestions, setSuggestions] = useState<string[]>([]);
 
-  // Extract unique specialties from the doctor data
   const uniqueSpecialties = useMemo(() => {
     return extractUniqueSpecialties(doctors);
   }, [doctors]);
 
-  // Load doctors data
   useEffect(() => {
     const loadDoctors = async () => {
       try {
@@ -43,7 +41,6 @@ const Index = () => {
     loadDoctors();
   }, []);
 
-  // Load filter state from URL on initial load
   useEffect(() => {
     if (doctors.length > 0) {
       const filterState = getFilterStateFromUrl();
@@ -54,7 +51,6 @@ const Index = () => {
     }
   }, [doctors]);
 
-  // Update search suggestions when search term changes
   useEffect(() => {
     if (searchTerm.trim()) {
       const newSuggestions = getSearchSuggestions(doctors, searchTerm);
@@ -64,11 +60,9 @@ const Index = () => {
     }
   }, [searchTerm, doctors]);
 
-  // Apply filters and sorting
   useEffect(() => {
     let result = [...doctors];
 
-    // Apply search filter
     if (searchTerm.trim()) {
       const lowerCaseSearchTerm = searchTerm.toLowerCase();
       result = result.filter(doctor => {
@@ -78,17 +72,14 @@ const Index = () => {
       });
     }
 
-    // Apply consultation type filter
     if (selectedConsultationType) {
       result = result.filter(doctor => doctor.consultationType.includes(selectedConsultationType));
     }
 
-    // Apply specialty filters
     if (selectedSpecialties.length > 0) {
       result = result.filter(doctor => selectedSpecialties.some(selectedSpecialty => doctor.specialty.includes(selectedSpecialty)));
     }
 
-    // Apply sorting
     if (sortOption === SortOption.FEES_ASC) {
       result.sort((a, b) => a.fee - b.fee);
     } else if (sortOption === SortOption.EXPERIENCE_DESC) {
@@ -96,7 +87,6 @@ const Index = () => {
     }
     setFilteredDoctors(result);
 
-    // Update URL params
     const filterState: FilterState = {
       search: searchTerm,
       consultationType: selectedConsultationType,
@@ -106,7 +96,6 @@ const Index = () => {
     updateUrlWithFilterState(filterState);
   }, [doctors, searchTerm, selectedConsultationType, selectedSpecialties, sortOption]);
 
-  // Handle browser back/forward navigation
   useEffect(() => {
     const handlePopState = () => {
       const filterState = getFilterStateFromUrl();
@@ -120,9 +109,11 @@ const Index = () => {
       window.removeEventListener('popstate', handlePopState);
     };
   }, []);
+
   const handleSearch = (value: string) => {
     setSearchTerm(value);
   };
+
   const handleSpecialtyChange = (specialty: string) => {
     setSelectedSpecialties(prev => {
       if (prev.includes(specialty)) {
@@ -132,21 +123,23 @@ const Index = () => {
       }
     });
   };
+
   const handleConsultationTypeChange = (type: ConsultationType | null) => {
     setSelectedConsultationType(type);
   };
+
   const handleSortChange = (option: SortOption) => {
     setSortOption(option === sortOption ? null : option);
   };
+
   return <div className="min-h-screen bg-gray-100">
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold text-medical-600">HEALTH POINT</h1>
+          <Logo />
         </div>
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        {/* Search Bar */}
         <div className="mb-8">
           <AutocompleteSearch suggestions={suggestions} onSearch={handleSearch} value={searchTerm} onChange={setSearchTerm} />
         </div>
@@ -165,12 +158,10 @@ const Index = () => {
           </div>}
 
         <div className="flex flex-col md:flex-row gap-6">
-          {/* Filters */}
           <div className="w-full md:w-64 flex-shrink-0">
             <FilterPanel uniqueSpecialties={uniqueSpecialties} selectedSpecialties={selectedSpecialties} consultationType={selectedConsultationType} sortOption={sortOption} onSpecialtyChange={handleSpecialtyChange} onConsultationTypeChange={handleConsultationTypeChange} onSortChange={handleSortChange} />
           </div>
 
-          {/* Doctor Grid */}
           <div className="flex-grow">
             <div className="mb-4">
               <p className="text-gray-600">
@@ -183,4 +174,5 @@ const Index = () => {
       </main>
     </div>;
 };
+
 export default Index;
