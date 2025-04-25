@@ -12,7 +12,20 @@ export async function fetchDoctors(): Promise<Doctor[]> {
     }
     
     const data = await response.json();
-    return data;
+    
+    // Map API response to our Doctor type structure
+    return data.map((doctor: any) => ({
+      id: doctor.id,
+      name: doctor.name,
+      specialty: doctor.specialities ? doctor.specialities.map((spec: any) => spec.name) : [],
+      experience: parseInt(doctor.experience) || 0,
+      fee: parseInt(doctor.fees?.replace(/[^\d]/g, '')) || 0,
+      consultationType: [
+        ...(doctor.video_consult ? ["Video Consult"] : []),
+        ...(doctor.in_clinic ? ["In Clinic"] : [])
+      ],
+      image: doctor.photo || undefined
+    }));
   } catch (error) {
     console.error("Error fetching doctors:", error);
     throw error;
@@ -20,12 +33,18 @@ export async function fetchDoctors(): Promise<Doctor[]> {
 }
 
 export function extractUniqueSpecialties(doctors: Doctor[]): string[] {
+  if (!doctors || !Array.isArray(doctors)) {
+    return [];
+  }
+  
   const specialtiesSet = new Set<string>();
   
   doctors.forEach(doctor => {
-    doctor.specialty.forEach(specialty => {
-      specialtiesSet.add(specialty);
-    });
+    if (doctor.specialty && Array.isArray(doctor.specialty)) {
+      doctor.specialty.forEach(specialty => {
+        specialtiesSet.add(specialty);
+      });
+    }
   });
   
   return Array.from(specialtiesSet).sort();
@@ -36,7 +55,9 @@ export function getSearchSuggestions(
   searchTerm: string,
   maxResults: number = 3
 ): string[] {
-  if (!searchTerm) return [];
+  if (!searchTerm || !doctors || !Array.isArray(doctors)) {
+    return [];
+  }
   
   const lowerCaseSearchTerm = searchTerm.toLowerCase();
   const matchingNames = new Set<string>();
@@ -48,11 +69,13 @@ export function getSearchSuggestions(
     }
     
     // Check specialties
-    doctor.specialty.forEach(specialty => {
-      if (specialty.toLowerCase().includes(lowerCaseSearchTerm)) {
-        matchingNames.add(specialty);
-      }
-    });
+    if (doctor.specialty && Array.isArray(doctor.specialty)) {
+      doctor.specialty.forEach(specialty => {
+        if (specialty.toLowerCase().includes(lowerCaseSearchTerm)) {
+          matchingNames.add(specialty);
+        }
+      });
+    }
   });
   
   return Array.from(matchingNames).slice(0, maxResults);
