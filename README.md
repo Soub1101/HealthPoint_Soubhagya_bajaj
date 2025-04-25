@@ -1,73 +1,53 @@
-# Welcome to your Lovable project
 
-## Project info
+# 🏥 Health Point
 
-**URL**: https://lovable.dev/projects/94a3e6bd-bf49-4c51-af80-5a47f828b143
+**Health Point** is a React-based doctor listing web application that enables users to search, filter, and sort doctors based on multiple criteria — all handled completely on the client side after a single API call.
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## 🚀 Features
 
-**Use Lovable**
+- 🔍 **Autocomplete Search**
+  - Top 3 real-time suggestions while typing doctor names
+  - Filters the list on selection or pressing Enter
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/94a3e6bd-bf49-4c51-af80-5a47f828b143) and start prompting.
+- 🧪 **Dynamic Filters**
+  - **Consultation Type**: Single-select radio buttons (Video Consult / In Clinic)
+  - **Specialties**: Multi-select checkboxes
+  - All filters can be combined for precise results
 
-Changes made via Lovable will be committed automatically to this repo.
+- ↕️ **Sorting Options**
+  - Sort by **Fees** (ascending)
+  - Sort by **Experience** (descending)
+  - First-applied sort takes precedence
 
-**Use your preferred IDE**
+- 🌐 **URL Query Parameters**
+  - Filters, sort, and search reflected in the URL
+  - Browser navigation (Back/Forward) retains filters and sort state
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- 🧪 **Test-Ready**
+  - Implements required `data-testid` attributes for easy test automation
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+---
 
-Follow these steps:
+## 📦 Tech Stack
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+- **Frontend**: React, JavaScript (ES6+)
+- **Styling**: CSS / Tailwind / Styled Components (based on your choice)
+- **API**: [SRM Campus API Mock](https://srijandubey.github.io/campus-api-mock/SRM-C1-25.json)
+- **Routing & Query Params**: React Router (v6+), URLSearchParams
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+---
 
-# Step 3: Install the necessary dependencies.
-npm i
+## 🧰 Getting Started
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+### Prerequisites
 
-**Edit a file directly in GitHub**
+- Node.js and npm installed
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Installation
 
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/94a3e6bd-bf49-4c51-af80-5a47f828b143) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/health-point.git
+   cd health-point
